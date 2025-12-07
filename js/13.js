@@ -149,54 +149,90 @@ console.log(calculateTotalPrice(4, "Droid"));
  
 
 // // // 2
-// // масив.метод((item, idx, arr)=> item)
+const Transaction = {
+  DEPOSIT: "deposit",
+  WITHDRAW: "withdraw",
+};
+const account = {
+  balance: 0,
 
-const dataArray = [
-  {
-    id: 101,
-    name: "Олег",
-    isActive: true,
+
+  transactions: [],
+  id: 1,
+
+  createTransaction(amount, type) {
+    const transaction = {
+      amount: amount,
+      type: type,
+      id: this.id,
+    };
+    this.id += 1;
+    return transaction;
   },
-  {
-    id: 102,
-    name: "Марія",
-    isActive: false,
+  deposit(amount) {
+    this.balance += amount;
+    const transaction = this.createTransaction(amount,Transaction.DEPOSIT);
+    this.transactions.push(transaction);
   },
-  {
-    id: 103,
-    name: "Віктор",
-    isActive: true,
+  withdraw(amount) {
+    if (amount > this.balance) {
+      console.log("Зняття такої суми не можливо, недостатньо коштів");
+      return;
+    }
+    else{
+      this.balance -=amount;
+      const transaction = this.createTransaction(amount,Transaction.WITHDRAW);
+      this.transactions.push(transaction);
+    }
   },
-  {
-    id: 104,
-    name: "Тетяна",
-    isActive: true,
+  getBalance() {
+    return this.balance;
   },
-  {
-    id: 105,
-    name: "Андрій",
-    isActive: false,
+  /*
+   * Метод шукає і повертає об'єкт транзакції по id
+   */
+  getTransactionDetails(id) {
+    for (let i = 0; i < this.transactions.length; i++) {
+      if (this.transactions[i].id === id) {
+        return this.transactions[i];
+      }
+      else{
+          return `Транзкації; ${id} не існує`;
+      }
+      }
+    }
+,
+  /*
+
+   * Метод повертає кількість коштів
+   * певного типу транзакції з усієї історії транзакцій
+   */
+  getTransactionTotal(type){
+    let sum = 0;
+    for (const el of this.transactions) {
+      if (el.type === type) {
+        sum += el.amount;
+        return sum;
+      }
+    }
   },
-];
+};
+account.deposit(1000);
+account.deposit(1000);
+account.deposit(1000);
+account.deposit(1000);
+account.withdraw(100);
+account.withdraw(100);
+account.withdraw(100);
+account.withdraw(100);
+account.withdraw(100);
+account.withdraw(100);
+account.withdraw(100);
+account.withdraw(100);
+account.withdraw(1000);
+console.log(account.getBalance());
+console.log(account.getTransactionDetails(5));
+console.log(account.getTransactionTotal(Transaction.DEPOSIT));
+console.log(account.getTransactionTotal(Transaction.WITHDRAW));
 
-dataArray.forEach((item)=>console.log(item));
-// нічого не повертає і може модифікувати
-
-// метод Мар; перебирає, повертає новий масив, де до кожного елементу щось застосує
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-// const arrMap = arr.map((item) => item * 10);
-// console.log(arrMap);
-
-// const namesArr = dataArray.map((item) => {
-//     return item.name
-// });
-// console.log(namesArr);
-
-// const filteredArr = arr.filter((item) => item > 6);
-// console.log(filteredArr);
-
-// const filtery = dataArray.filter((item) => item.isActive);
-// console.log(filtery);
-
-const findElement = dataArray.find((item) => item.name === "Віктор");
-console.log(findElement);
+// console.log(account);
